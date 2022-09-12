@@ -1,0 +1,35 @@
+1:  search(start_node):
+2:     node_list = list()                # empty list (queue/stack/...)
+3:     visited = set()                   # empty set
+4:     add start_node to node_list
+5:     while list is not empty:
+6:        node = node_list.first()       # pick the next node to visit
+7:        remove node from node_list
+8:        if node not in visited:
+9:           visited.add(node)
+10:          if goal_node(node):
+11:             return node              # goal found
+12:          add node.neighbors() to node_list
+13:       end if
+14:    end while
+15:    return None   
+                    # no goal found
+1. BFS
+list    | visited
+A       |
+B       | A
+CF      | AB
+FEI     | ABC
+EIDG    | ABCF
+IDG     | ABCFE
+DG      | ABCFEI
+G       | ABCFEID
+        | ABCFEIDG (goal, return node)
+
+2. DFS
+list    | visited
+A   |
+B   | A
+CF  | AB
+FDG | ABC
+FD  | ABCG  (goal, return node)
