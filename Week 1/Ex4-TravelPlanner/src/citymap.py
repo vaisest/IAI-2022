@@ -83,8 +83,7 @@ class CityMap:
             node = node_list.popleft()
 
             if node["code"] == goal:
-                goal_state = State(goal)
-                state = goal_state
+                state = State(goal)
 
                 # generate linked list aka state
                 while state.stop in parents and parents[state.stop]:
