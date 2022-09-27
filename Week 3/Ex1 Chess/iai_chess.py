@@ -20,13 +20,30 @@
 #           default = False, which prints ascii board positions
 
 
+import sys
 import numpy as np
 from timeit import default_timer as timer
 import chess
 import chess.svg
 
-from our_heuristic import our_heuristic
+version = (sys.version_info.major, sys.version_info.minor)
+print(version)
+
+if version == (3,7):
+    from __pycache__.our_heuristic37 import our_heuristic
+elif version == (3,8):
+    from __pycache__.our_heuristic38 import our_heuristic
+elif version == (3,9):
+    from __pycache__.our_heuristic39 import our_heuristic
+elif version == (3,10):
+    from __pycache__.our_heuristic310 import our_heuristic
+elif version == (3,11):
+    from __pycache__.our_heuristic311 import our_heuristic
+else:
+    sys.exit("sorry. only python versions 3.6-3.11 supported")
+    
 from your_heuristic import your_heuristic
+
 
 def max_value(board, alpha, beta, depth, heuristic):
 
@@ -145,3 +162,5 @@ def play_game(board=None, depth=4,
         print("black wins")
     else:
         print("draw")
+
+play_game(depth=3)
