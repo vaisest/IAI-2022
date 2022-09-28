@@ -127,7 +127,6 @@ def play_game(
     white_heuristic=our_heuristic,
     black_heuristic=your_heuristic,
     graphics=False,
-    quiet=False,
 ):
 
     if board == None:
@@ -135,29 +134,26 @@ def play_game(
     lastmove = None
 
     while not board.is_game_over():
-        if not graphics and not quiet:
+        if not graphics:
             print(board)
-        elif graphics:
+        else:
             display(chess.svg.board(board, size=320, lastmove=lastmove))
 
         start = timer()
         if board.turn == chess.WHITE:
-            if not quiet:
-                print("white moves")
+            print("white moves")
             (v, move) = max_value(board, -np.inf, +np.inf, depth, white_heuristic)
         else:
-            if not quiet:
-                print("black moves")
+            print("black moves")
             (v, move) = min_value(board, -np.inf, +np.inf, depth, black_heuristic)
         lastmove = move
         end = timer()
         time_taken = end - start
 
-        if not quiet:
-            print(move)
-            print(f"time taken {time_taken:.2f}")
-            print("---")
+        print(move)
+        print(f"time taken {time_taken:.2f}")
         board.push(move)
+        print("---")
         # input()
 
     if not graphics:
@@ -168,12 +164,10 @@ def play_game(
     print(f"game over because {board.outcome()}")
     if board.outcome().winner == chess.WHITE:
         print("white wins")
-        return False
     elif board.outcome().winner == chess.BLACK:
         print("black wins")
-        return True
     else:
         print("draw")
 
 
-# play_game(depth=3)
+play_game()

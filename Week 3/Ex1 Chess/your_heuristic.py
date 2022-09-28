@@ -14,11 +14,21 @@ import random
 # located: usually the central squares are considered more important
 
 
-def your_heuristic(board: chess.Board, verbose=False, piece_values=None):
+def your_heuristic(board: chess.Board, verbose=False):
     # the pieces are encoded as integers as follows:
     # pawn = 1, knight = 2, bishop = 3, rook = 4, queen = 4, king = 5
     # you can use these integers to index the below array
-    piece_value = piece_values if piece_values else [None, 0.2, 1, 1, 1, 2, 5]
+
+    # statistics:
+    # [None, 1, 1, 1, 1, 1, 1]               Wins: 0.0     Losses: 1.0     Draws: 0.0     n: 54
+    # [None, 0.2, 1, 1, 1, 2, 5]             Wins: 0.5325  Losses: 0.38    Draws: 0.0875  n: 400
+    # [None, 1, 3.05, 3.33, 5.63, 9.5, 20]   Wins: 0.5756  Losses: 0.3195  Draws: 0.1049  n: 410
+    # [None, 1, 2.97, 3.13, 5.02, 9.49, 20]  Wins: 0.6025  Losses: 0.2975  Draws: 0.1     n: 400
+    # [None, 1, 3.2, 3.33, 5.1, 8.8, 20]     Wins: 0.6204  Losses: 0.2968  Draws: 0.0827  n: 411
+    # [None, 1, 3.2, 3.33, 5.1, 8.8, 12]     Wins: 0.6383  Losses: 0.2793  Draws: 0.0824  n: 376
+    # [None, 1, 3.2, 3.33, 5.1, 8.8, 100]    Wins: 0.6016  Losses: 0.3034  Draws: 0.0950  n: 379
+
+    piece_value = [None, 1, 3.2, 3.33, 5.1, 8.8, 12]
 
     score = 0
     pmap = board.piece_map()  # a dictionary with all the pieces of the board
@@ -48,7 +58,17 @@ def your_heuristic(board: chess.Board, verbose=False, piece_values=None):
                     multiplier = 1.3
                 if chess.square_rank(square) == 4:
                     multiplier = 1.05
-                print(piece)
+                else:
+                    multiplier = 1
+            elif piece.color == chess.BLACK:
+                if chess.square_rank(square) >= 4:
+                    multiplier = 2.1
+                if chess.square_rank(square) == 5:
+                    multiplier = 1.3
+                if chess.square_rank(square) == 6:
+                    multiplier = 1.05
+                else:
+                    multiplier = 1
             piece_score = (
                 (1 if piece.color == chess.WHITE else -1) * multiplier * piece_value[1]
             )
@@ -63,4 +83,4 @@ def your_heuristic(board: chess.Board, verbose=False, piece_values=None):
 
         score += piece_score
 
-    return score * random.uniform(0.9, 1.1)
+    return score * random.uniform(0.97, 1.03)
