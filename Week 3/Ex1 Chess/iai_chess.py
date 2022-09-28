@@ -7,7 +7,7 @@
 # play_game()        # default depth=4, which may take up to 20 minutes
 # from our_heuristic import our_heuristic
 # play_game(black_heuristic=our_heuristic) # an even game between two good bots
-# 
+#
 # arguments to play_game:
 # board = starting board position given as a chess.Board object
 #         default is the usual starting position
@@ -29,19 +29,19 @@ import chess.svg
 version = (sys.version_info.major, sys.version_info.minor)
 print(version)
 
-if version == (3,7):
+if version == (3, 7):
     from __pycache__.our_heuristic37 import our_heuristic
-elif version == (3,8):
+elif version == (3, 8):
     from __pycache__.our_heuristic38 import our_heuristic
-elif version == (3,9):
+elif version == (3, 9):
     from __pycache__.our_heuristic39 import our_heuristic
-elif version == (3,10):
+elif version == (3, 10):
     from __pycache__.our_heuristic310 import our_heuristic
-elif version == (3,11):
+elif version == (3, 11):
     from __pycache__.our_heuristic311 import our_heuristic
 else:
     sys.exit("sorry. only python versions 3.6-3.11 supported")
-    
+
 from your_heuristic import your_heuristic
 
 
@@ -49,10 +49,11 @@ def max_value(board, alpha, beta, depth, heuristic):
 
     if board.is_game_over():
         if board.outcome().winner == chess.WHITE:
-            return (1e10+depth, None)
+            return (1e10 + depth, None)
         elif board.outcome().winner == chess.BLACK:
-            return (-1e10-depth, None)
-        else: return (0, None)  # draw
+            return (-1e10 - depth, None)
+        else:
+            return (0, None)  # draw
 
     if depth < 1:
         return (heuristic(board), None)
@@ -69,24 +70,26 @@ def max_value(board, alpha, beta, depth, heuristic):
 
     for move in sorted(ranked_moves, key=ranked_moves.get, reverse=True):
         board.push(move)
-        (child_v, _) =  min_value(board, alpha, beta, depth-1, heuristic)
+        (child_v, _) = min_value(board, alpha, beta, depth - 1, heuristic)
         board.pop()
 
         if child_v > v:
             v = child_v
             best_move = move
         alpha = max(alpha, child_v)
-        if alpha >= beta: break
+        if alpha >= beta:
+            break
 
     return (v, best_move)
+
 
 def min_value(board, alpha, beta, depth, heuristic):
 
     if board.is_game_over():
         if board.outcome().winner == chess.WHITE:
-            return (1e10+depth, None)
+            return (1e10 + depth, None)
         elif board.outcome().winner == chess.BLACK:
-            return (-1e10-depth, None)
+            return (-1e10 - depth, None)
         else:
             return (0.0, None)  # draw
 
@@ -95,7 +98,7 @@ def min_value(board, alpha, beta, depth, heuristic):
 
     v = np.inf
     best_move = None
-    
+
     legal_moves = board.legal_moves
     ranked_moves = {}
     for move in legal_moves:
@@ -105,50 +108,57 @@ def min_value(board, alpha, beta, depth, heuristic):
 
     for move in sorted(ranked_moves, key=ranked_moves.get, reverse=False):
         board.push(move)
-        (child_v, _) =  max_value(board, alpha, beta, depth-1, heuristic)
+        (child_v, _) = max_value(board, alpha, beta, depth - 1, heuristic)
         board.pop()
 
         if child_v < v:
             v = child_v
             best_move = move
         beta = min(beta, child_v)
-        if alpha >= beta: break
+        if alpha >= beta:
+            break
 
     return (v, best_move)
 
-def play_game(board=None, depth=4,
-              white_heuristic=our_heuristic,
-              black_heuristic=your_heuristic,
-              graphics=False):
+
+def play_game(
+    board=None,
+    depth=4,
+    white_heuristic=our_heuristic,
+    black_heuristic=your_heuristic,
+    graphics=False,
+    quiet=False,
+):
 
     if board == None:
-        board = chess.Board() # normal starting position
+        board = chess.Board()  # normal starting position
     lastmove = None
-        
+
     while not board.is_game_over():
-        if not graphics:
+        if not graphics and not quiet:
             print(board)
-        else:
+        elif graphics:
             display(chess.svg.board(board, size=320, lastmove=lastmove))
-    
+
         start = timer()
         if board.turn == chess.WHITE:
-            print("white moves")
-            (v, move) = max_value(board, -np.inf, +np.inf,
-                                  depth, white_heuristic)
+            if not quiet:
+                print("white moves")
+            (v, move) = max_value(board, -np.inf, +np.inf, depth, white_heuristic)
         else:
-            print("black moves")
-            (v, move) = min_value(board, -np.inf, +np.inf,
-                                  depth, black_heuristic)
+            if not quiet:
+                print("black moves")
+            (v, move) = min_value(board, -np.inf, +np.inf, depth, black_heuristic)
         lastmove = move
         end = timer()
-        time_taken = end-start
-        
-        print(move)
-        print(f"time taken {time_taken:.2f}")
+        time_taken = end - start
+
+        if not quiet:
+            print(move)
+            print(f"time taken {time_taken:.2f}")
+            print("---")
         board.push(move)
-        print("---")
-        #input()
+        # input()
 
     if not graphics:
         print(board)
@@ -158,9 +168,12 @@ def play_game(board=None, depth=4,
     print(f"game over because {board.outcome()}")
     if board.outcome().winner == chess.WHITE:
         print("white wins")
+        return False
     elif board.outcome().winner == chess.BLACK:
         print("black wins")
+        return True
     else:
         print("draw")
 
-play_game(depth=3)
+
+# play_game(depth=3)
