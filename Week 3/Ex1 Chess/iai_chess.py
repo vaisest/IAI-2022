@@ -170,4 +170,4 @@ def play_game(
         print("draw")
 
 
-play_game()
+play_game(depth=3)
