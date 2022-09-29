@@ -19,6 +19,7 @@ def your_heuristic(board: chess.Board, verbose=False):
     # pawn = 1, knight = 2, bishop = 3, rook = 4, queen = 4, king = 5
     # you can use these integers to index the below array
 
+    # invalid because pawn advance score was incorrect, but
     # statistics:
     # [None, 1, 1, 1, 1, 1, 1]               Wins: 0.0     Losses: 1.0     Draws: 0.0     n: 54
     # [None, 0.2, 1, 1, 1, 2, 5]             Wins: 0.5325  Losses: 0.38    Draws: 0.0875  n: 400
@@ -61,11 +62,11 @@ def your_heuristic(board: chess.Board, verbose=False):
                 else:
                     multiplier = 1
             elif piece.color == chess.BLACK:
-                if chess.square_rank(square) >= 4:
+                if chess.square_rank(square) <= 4:
                     multiplier = 2.1
-                if chess.square_rank(square) == 5:
+                elif chess.square_rank(square) == 5:
                     multiplier = 1.3
-                if chess.square_rank(square) == 6:
+                elif chess.square_rank(square) == 6:
                     multiplier = 1.05
                 else:
                     multiplier = 1
