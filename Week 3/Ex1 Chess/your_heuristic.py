@@ -29,6 +29,13 @@ def your_heuristic(board: chess.Board, verbose=False):
     # [None, 1, 3.2, 3.33, 5.1, 8.8, 12]     Wins: 0.6383  Losses: 0.2793  Draws: 0.0824  n: 376
     # [None, 1, 3.2, 3.33, 5.1, 8.8, 100]    Wins: 0.6016  Losses: 0.3034  Draws: 0.0950  n: 379
 
+    # with pawn advance corrected:
+    # [None, 1, 3.2, 3.33, 5.1, 8.8, 12]     Wins: 0.4894  Losses: 0.4346  Draws: 0.0759  n: 474
+
+    # with no pawn multiplier at all:
+    # [None, 1, 3.2, 3.33, 5.1, 8.8, 12]     Wins: 0.6371  Losses: 0.2756  Draws: 0.0873  n: 722
+    # :D
+
     piece_value = [None, 1, 3.2, 3.33, 5.1, 8.8, 12]
 
     score = 0
@@ -51,32 +58,30 @@ def your_heuristic(board: chess.Board, verbose=False):
             return 0
 
         # pawn
-        if piece.piece_type == 1:
-            if piece.color == chess.WHITE:
-                if chess.square_rank(square) >= 6:
-                    multiplier = 2.1
-                if chess.square_rank(square) == 5:
-                    multiplier = 1.3
-                if chess.square_rank(square) == 4:
-                    multiplier = 1.05
-                else:
-                    multiplier = 1
-            elif piece.color == chess.BLACK:
-                if chess.square_rank(square) <= 3:
-                    multiplier = 2.1
-                elif chess.square_rank(square) == 4:
-                    multiplier = 1.3
-                elif chess.square_rank(square) == 5:
-                    multiplier = 1.05
-                else:
-                    multiplier = 1
-            piece_score = (
-                (1 if piece.color == chess.WHITE else -1) * multiplier * piece_value[1]
-            )
-        else:
-            piece_score = (1 if piece.color == chess.WHITE else -1) * piece_value[
-                piece.piece_type
-            ]
+        # if piece.piece_type == 1:
+        #     if piece.color == chess.WHITE:
+        #         if chess.square_rank(square) >= 6:
+        #             multiplier = 2.1
+        #         if chess.square_rank(square) == 5:
+        #             multiplier = 1.3
+        #         if chess.square_rank(square) == 4:
+        #             multiplier = 1.05
+        #         else:
+        #             multiplier = 1
+        #     elif piece.color == chess.BLACK:
+        #         if chess.square_rank(square) <= 3:
+        #             multiplier = 2.1
+        #         elif chess.square_rank(square) == 4:
+        #             multiplier = 1.3
+        #         elif chess.square_rank(square) == 5:
+        #             multiplier = 1.05
+        #         else:
+        #             multiplier = 1
+        #     piece_score = (
+        #         (1 if piece.color == chess.WHITE else -1) * multiplier * piece_value[1]
+        #     )
+        # else:
+        piece_score = (1 if piece.color == chess.WHITE else -1) * piece_value[piece.piece_type]
 
         # you can use this for debugging
         if verbose:
