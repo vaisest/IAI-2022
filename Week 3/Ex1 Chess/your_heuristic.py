@@ -62,11 +62,11 @@ def your_heuristic(board: chess.Board, verbose=False):
                 else:
                     multiplier = 1
             elif piece.color == chess.BLACK:
-                if chess.square_rank(square) <= 4:
+                if chess.square_rank(square) <= 3:
                     multiplier = 2.1
-                elif chess.square_rank(square) == 5:
+                elif chess.square_rank(square) == 4:
                     multiplier = 1.3
-                elif chess.square_rank(square) == 6:
+                elif chess.square_rank(square) == 5:
                     multiplier = 1.05
                 else:
                     multiplier = 1
