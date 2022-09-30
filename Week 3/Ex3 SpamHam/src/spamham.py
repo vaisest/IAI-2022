@@ -66,27 +66,22 @@ class SpamHam:
         """
         # Implement me
 
-        spam_total = sum(self.spam.values())
+        # Word totals
 
-        def spam_probability(word):
-            if word not in self.spam:
-                return SMALL_NUMBER
-            return self.spam[word] / spam_total
-
-        ham_total = sum(self.ham.values())
-
-        def ham_probability(word):
-            if word not in self.ham:
-                return SMALL_NUMBER
-            return self.ham[word] / ham_total
+        spam_sum = sum(self.spam.values())
+        ham_sum = sum(self.ham.values())
 
         # no bias
         log_spamicity = math.log(0.5) - math.log(0.5)
 
         for word in words:
-            log_spamicity += math.log(spam_probability(word)) - math.log(ham_probability(word))
+            spam_probability = (
+                self.spam[word] / spam_sum if word in self.spam else SMALL_NUMBER
+            )
+            ham_probability = self.ham[word] / ham_sum if word in self.ham else SMALL_NUMBER
+            log_spamicity += math.log(spam_probability) - math.log(ham_probability)
 
         spamicity = math.exp(log_spamicity)
 
-        # return scaled to 0-1
-        return spamicity / (1 + spamicity)  # R / (R + 1)
+        # return scaled to 0-1 with R / (R + 1)
+        return spamicity / (1 + spamicity)
