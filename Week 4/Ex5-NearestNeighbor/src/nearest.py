@@ -1,8 +1,9 @@
-import math
 import os
-import numpy as np
-from PIL import Image
 import random
+
+import numpy as np
+
+# from PIL import Image
 
 NUMBER_OF_PIXELS = 28 * 28
 IMAGE_SIZE = 28
@@ -71,18 +72,25 @@ class Nearest:
 
         examples = [e for e in examples if e["char"] in (target_char, opposite_char)]
 
+        dist_sum = 0
         for e in examples:
-            min_dist = 9999999999
+            min_dist = NUMBER_OF_PIXELS
             closest_point = None
             for point in self.points:
                 distance = np.count_nonzero(np.not_equal(point["vector"], e["vector"]))
-
                 if distance < min_dist:
                     min_dist = distance
                     closest_point = point
+
+                    # !!!
+                    # without 99%, with 98%, but twice as fast
+                    # if distance <= 60:
+                    #     break
             if closest_point["char"] == e["char"]:
+                dist_sum += min_dist
                 success += 1
 
+        # print(dist_sum / len(examples))
         return float(success) / len(examples)
 
     # def save_weights(self, filename):
